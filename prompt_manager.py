@@ -153,13 +153,51 @@ def show_by_category():
 
 
 def search_prompt():
-    """준비 중"""
-    print("준비 중입니다.")
+    """키워드로 제목 또는 내용에 포함된 프롬프트를 검색한다."""
+    print("\n=== 프롬프트 검색 ===")
+    keyword = input_nonempty("검색어: ").lower()
+
+    matched = [
+        p for p in prompts
+        if keyword in p["title"].lower() or keyword in p["content"].lower()
+    ]
+
+    if not matched:
+        print("검색 결과가 없습니다.")
+        return
+
+    print("검색 결과:")
+    for i, item in enumerate(matched, start=1):
+        print(format_line(i, item))
+    print(f"{len(matched)}개의 프롬프트를 찾았습니다.")
 
 
 def show_detail():
-    """준비 중"""
-    print("준비 중입니다.")
+    """번호를 입력하면 해당 프롬프트의 전체 내용을 출력한다. (조회수 증가)"""
+    print("\n=== 프롬프트 상세 보기 ===")
+    if not prompts:
+        print("등록된 프롬프트가 없습니다.")
+        return
+
+    choice = input("번호 입력: ").strip()
+    if not choice.isdigit() or not (1 <= int(choice) <= len(prompts)):
+        print("잘못된 번호입니다.")
+        return
+
+    item = prompts[int(choice) - 1]
+    item["views"] += 1
+    star = "⭐" if item["favorite"] else "없음"
+
+    line = "─" * 28
+    print(line)
+    print(f"제목: {item['title']}")
+    print(f"카테고리: {item['category']}")
+    print(f"즐겨찾기: {star}")
+    print(f"조회수: {item['views']}")
+    print(line)
+    print("내용:")
+    print(item["content"])
+    print(line)
 
 
 def manage_favorite():
