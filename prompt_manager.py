@@ -122,9 +122,34 @@ def show_list():
     print("준비 중입니다.")
 
 
+def format_line(index, item):
+    """목록 한 줄 표기: '1. [카테고리] 제목 ⭐'"""
+    star = " ⭐" if item["favorite"] else ""
+    return f"{index}. [{item['category']}] {item['title']}{star}"
+
+
 def show_by_category():
-    """준비 중"""
-    print("준비 중입니다.")
+    """카테고리를 선택하면 해당 카테고리의 프롬프트만 출력한다."""
+    print("\n=== 카테고리별 조회 ===")
+    for i, name in enumerate(CATEGORIES, start=1):
+        print(f"{i}) {name}")
+
+    choice = input("선택: ").strip()
+    if not choice.isdigit() or not (1 <= int(choice) <= len(CATEGORIES)):
+        print("올바른 번호를 선택해주세요.")
+        return
+
+    category = CATEGORIES[int(choice) - 1]
+    matched = [p for p in prompts if p["category"] == category]
+
+    if not matched:
+        print(f"[{category}] 카테고리에 등록된 프롬프트가 없습니다.")
+        return
+
+    print(f"\n[{category}] 카테고리 프롬프트:")
+    for i, item in enumerate(matched, start=1):
+        print(format_line(i, item))
+    print(f"총 {len(matched)}개의 프롬프트")
 
 
 def search_prompt():
