@@ -73,9 +73,48 @@ def show_menu():
     print("0. 종료")
 
 
+def input_nonempty(label):
+    """빈 값이 들어오면 다시 입력을 요청하는 공용 입력 함수."""
+    while True:
+        value = input(label).strip()
+        if value:
+            return value
+        print("빈 값은 입력할 수 없습니다. 다시 입력해주세요.")
+
+
+def select_category():
+    """카테고리를 목록에서 선택하거나 직접 입력하도록 한다."""
+    print("카테고리 선택:")
+    for i, name in enumerate(CATEGORIES, start=1):
+        print(f"{i}) {name}")
+    print(f"{len(CATEGORIES) + 1}) 직접 입력")
+
+    while True:
+        choice = input("선택: ").strip()
+        if choice.isdigit():
+            num = int(choice)
+            if 1 <= num <= len(CATEGORIES):
+                return CATEGORIES[num - 1]
+            if num == len(CATEGORIES) + 1:
+                return input_nonempty("카테고리 직접 입력: ")
+        print("올바른 번호를 선택해주세요.")
+
+
 def add_prompt():
-    """준비 중"""
-    print("준비 중입니다.")
+    """새 프롬프트를 입력받아 리스트에 추가한다."""
+    print("\n=== 프롬프트 추가 ===")
+    title = input_nonempty("제목: ")
+    content = input_nonempty("내용: ")
+    category = select_category()
+
+    prompts.append({
+        "title": title,
+        "content": content,
+        "category": category,
+        "favorite": False,
+        "views": 0,
+    })
+    print("프롬프트가 추가되었습니다!")
 
 
 def show_list():
