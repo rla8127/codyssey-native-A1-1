@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# 데이터 파일 (실행 중 생성)
+prompts_export/
+*.tmp
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
