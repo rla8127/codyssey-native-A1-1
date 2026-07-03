@@ -6,6 +6,12 @@
 - 실행 중 추가한 프롬프트와 즐겨찾기 상태는 메모리에 유지된다. (종료 시 초기화)
 """
 
+import json
+import os
+
+# JSON 저장 파일 이름
+DATA_FILE = "prompts.json"
+
 # 미리 정의된 카테고리 목록
 CATEGORIES = ["텍스트 생성", "이미지 생성", "영상 생성", "페르소나", "자동화", "기타"]
 
@@ -70,6 +76,12 @@ def show_menu():
     print("5. 프롬프트 상세 보기")
     print("6. 즐겨찾기 관리")
     print("7. 즐겨찾기 목록")
+    print("8. 프롬프트 수정")
+    print("9. 프롬프트 삭제")
+    print("10. 조회수 Top 목록")
+    print("11. JSON으로 저장")
+    print("12. JSON에서 불러오기")
+    print("13. 카테고리별 Markdown 내보내기")
     print("0. 종료")
 
 
@@ -244,6 +256,120 @@ def show_favorites():
     print(f"총 {len(matched)}개의 즐겨찾기")
 
 
+def edit_prompt():
+    """번호를 입력해 프롬프트의 제목/내용/카테고리를 수정한다. (빈 입력은 기존값 유지)"""
+    print("\n=== 프롬프트 수정 ===")
+    if not prompts:
+        print("등록된 프롬프트가 없습니다.")
+        return
+
+    for i, item in enumerate(prompts, start=1):
+        print(format_line(i, item))
+
+    choice = input("수정할 번호 입력: ").strip()
+    if not choice.isdigit() or not (1 <= int(choice) <= len(prompts)):
+        print("잘못된 번호입니다.")
+        return
+
+    item = prompts[int(choice) - 1]
+    print("(빈 값으로 두면 기존 내용을 유지합니다.)")
+    new_title = input(f"제목 [{item['title']}]: ").strip()
+    new_content = input("내용 (기존 유지하려면 Enter): ").strip()
+
+    if new_title:
+        item["title"] = new_title
+    if new_content:
+        item["content"] = new_content
+
+    change = input("카테고리를 변경할까요? (y/N): ").strip().lower()
+    if change == "y":
+        item["category"] = select_category()
+
+    print("프롬프트가 수정되었습니다!")
+
+
+def delete_prompt():
+    """번호를 입력해 프롬프트를 삭제한다."""
+    print("\n=== 프롬프트 삭제 ===")
+    if not prompts:
+        print("등록된 프롬프트가 없습니다.")
+        return
+
+    for i, item in enumerate(prompts, start=1):
+        print(format_line(i, item))
+
+    choice = input("삭제할 번호 입력: ").strip()
+    if not choice.isdigit() or not (1 <= int(choice) <= len(prompts)):
+        print("잘못된 번호입니다.")
+        return
+
+    removed = prompts.pop(int(choice) - 1)
+    print(f"'{removed['title']}' 프롬프트를 삭제했습니다.")
+
+
+def show_top_views():
+    """조회수 기준으로 정렬한 Top 목록을 출력한다."""
+    print("\n=== 조회수 Top 목록 ===")
+    if not prompts:
+        print("등록된 프롬프트가 없습니다.")
+        return
+
+    ranked = sorted(prompts, key=lambda p: p["views"], reverse=True)
+    for i, item in enumerate(ranked, start=1):
+        print(f"{format_line(i, item)}  (조회수 {item['views']})")
+
+
+def save_to_json():
+    """현재 프롬프트 데이터를 JSON 파일로 저장한다. (보너스)"""
+    print("\n=== JSON으로 저장 ===")
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(prompts, f, ensure_ascii=False, indent=2)
+    print(f"'{DATA_FILE}' 파일에 {len(prompts)}개의 프롬프트를 저장했습니다.")
+
+
+def load_from_json():
+    """JSON 파일에서 프롬프트 데이터를 불러온다. (보너스)"""
+    print("\n=== JSON에서 불러오기 ===")
+    if not os.path.exists(DATA_FILE):
+        print(f"'{DATA_FILE}' 파일이 없습니다. 먼저 저장해주세요.")
+        return
+
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
+        loaded = json.load(f)
+
+    prompts.clear()
+    for item in loaded:
+        item.setdefault("favorite", False)
+        item.setdefault("views", 0)
+        prompts.append(item)
+    print(f"{len(prompts)}개의 프롬프트를 불러왔습니다.")
+
+
+def export_markdown():
+    """전체 프롬프트를 카테고리별 Markdown 파일로 내보낸다. (보너스)"""
+    print("\n=== 카테고리별 Markdown 내보내기 ===")
+    if not prompts:
+        print("내보낼 프롬프트가 없습니다.")
+        return
+
+    export_dir = "prompts_export"
+    os.makedirs(export_dir, exist_ok=True)
+
+    categories = sorted({p["category"] for p in prompts})
+    for category in categories:
+        items = [p for p in prompts if p["category"] == category]
+        safe_name = category.replace(" ", "_").replace("/", "_")
+        path = os.path.join(export_dir, f"{safe_name}.md")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(f"# {category}\n\n")
+            for item in items:
+                star = " ⭐" if item["favorite"] else ""
+                f.write(f"## {item['title']}{star}\n\n")
+                f.write(f"{item['content']}\n\n")
+
+    print(f"'{export_dir}/' 폴더에 {len(categories)}개 카테고리의 Markdown 파일을 생성했습니다.")
+
+
 def main():
     """프로그램 진입점. 메뉴를 반복해서 보여주고 입력을 처리한다."""
     while True:
@@ -264,6 +390,18 @@ def main():
             manage_favorite()
         elif choice == "7":
             show_favorites()
+        elif choice == "8":
+            edit_prompt()
+        elif choice == "9":
+            delete_prompt()
+        elif choice == "10":
+            show_top_views()
+        elif choice == "11":
+            save_to_json()
+        elif choice == "12":
+            load_from_json()
+        elif choice == "13":
+            export_markdown()
         elif choice == "0":
             print("프로그램을 종료합니다. 안녕히 가세요!")
             break
