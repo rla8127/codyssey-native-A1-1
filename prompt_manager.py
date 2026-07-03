@@ -201,13 +201,40 @@ def show_detail():
 
 
 def manage_favorite():
-    """준비 중"""
-    print("준비 중입니다.")
+    """번호를 입력해 즐겨찾기를 추가/해제한다."""
+    print("\n=== 즐겨찾기 관리 ===")
+    if not prompts:
+        print("등록된 프롬프트가 없습니다.")
+        return
+
+    for i, item in enumerate(prompts, start=1):
+        print(format_line(i, item))
+
+    choice = input("프롬프트 번호 입력: ").strip()
+    if not choice.isdigit() or not (1 <= int(choice) <= len(prompts)):
+        print("잘못된 번호입니다.")
+        return
+
+    item = prompts[int(choice) - 1]
+    item["favorite"] = not item["favorite"]
+    if item["favorite"]:
+        print(f"'{item['title']}' 프롬프트를 즐겨찾기에 추가했습니다!")
+    else:
+        print(f"'{item['title']}' 프롬프트를 즐겨찾기에서 해제했습니다.")
 
 
 def show_favorites():
-    """준비 중"""
-    print("준비 중입니다.")
+    """즐겨찾기된 프롬프트만 모아서 출력한다."""
+    print("\n=== 즐겨찾기 목록 ===")
+    matched = [p for p in prompts if p["favorite"]]
+
+    if not matched:
+        print("즐겨찾기한 프롬프트가 없습니다.")
+        return
+
+    for i, item in enumerate(matched, start=1):
+        print(format_line(i, item))
+    print(f"총 {len(matched)}개의 즐겨찾기")
 
 
 def main():
