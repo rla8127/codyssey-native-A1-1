@@ -50,6 +50,51 @@ python prompt_manager.py
 | 12 | JSON에서 불러오기 | `prompts.json`에서 데이터 불러오기 |
 | 13 | Markdown 내보내기 | 카테고리별 `.md` 파일을 `prompts_export/`에 생성 |
 
+## 실행 화면
+
+각 기능이 정상 동작하는 것을 증명하는 스크린샷입니다.
+
+### 개발 환경
+
+![메인 메뉴](screenshots/0.png)
+
+### 메인 메뉴
+
+![메인 메뉴](screenshots/1.png)
+
+### 프롬프트 추가
+
+![프롬프트 추가](screenshots/2.png)
+
+### 전체 목록
+
+![전체 목록](screenshots/3.png)
+
+### 카테고리별 조회
+
+![카테고리별 조회](screenshots/4.png)
+
+### 검색
+
+![검색](screenshots/5.png)
+
+### 상세 보기
+
+![상세 보기](screenshots/6.png)
+
+### 즐겨찾기 추가/해제
+
+![즐겨찾기 추가/해제](screenshots/7.png)
+
+### 즐겨찾기 목록
+
+![즐겨찾기 목록](screenshots/8.png)
+
+### 잘못된 입력 처리
+
+![잘못된 입력 처리](screenshots/9.png)
+
+
 ## 프롬프트 카테고리
 
 미리 정의된 카테고리는 다음과 같으며, 추가 시 직접 입력도 가능합니다.
