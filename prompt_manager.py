@@ -1,5 +1,5 @@
 """
-나만의 프롬프트 관리 (Prompt Manager)
+나만의 프롬프트 관리 (Prompt Manager) - Codyssey
 
 터미널에서 메뉴 번호를 입력해 프롬프트를 관리하는 콘솔 프로그램.
 - 표준 라이브러리(json)만 사용하며, 기능별로 함수를 분리한다.
@@ -94,6 +94,7 @@ def input_nonempty(label):
         print("빈 값은 입력할 수 없습니다. 다시 입력해주세요.")
 
 
+# 카테고리 직접 입력 시 자동 추가기능까진 구현안했음.
 def select_category():
     """카테고리를 목록에서 선택하거나 직접 입력하도록 한다."""
     print("카테고리 선택:")
@@ -111,7 +112,7 @@ def select_category():
                 return input_nonempty("카테고리 직접 입력: ")
         print("올바른 번호를 선택해주세요.")
 
-
+# 1번 기능
 def add_prompt():
     """새 프롬프트를 입력받아 리스트에 추가한다."""
     print("\n=== 프롬프트 추가 ===")
@@ -128,7 +129,7 @@ def add_prompt():
     })
     print("프롬프트가 추가되었습니다!")
 
-
+# 2번 기능
 def show_list():
     """저장된 모든 프롬프트를 번호와 함께 출력한다."""
     print("\n=== 프롬프트 목록 ===")
@@ -146,7 +147,7 @@ def format_line(index, item):
     star = " ⭐" if item["favorite"] else ""
     return f"{index}. [{item['category']}] {item['title']}{star}"
 
-
+# 3번 기능
 def show_by_category():
     """카테고리를 선택하면 해당 카테고리의 프롬프트만 출력한다."""
     print("\n=== 카테고리별 조회 ===")
@@ -170,7 +171,7 @@ def show_by_category():
         print(format_line(i, item))
     print(f"총 {len(matched)}개의 프롬프트")
 
-
+# 4번 기능
 def search_prompt():
     """키워드로 제목 또는 내용에 포함된 프롬프트를 검색한다."""
     print("\n=== 프롬프트 검색 ===")
@@ -190,7 +191,7 @@ def search_prompt():
         print(format_line(i, item))
     print(f"{len(matched)}개의 프롬프트를 찾았습니다.")
 
-
+# 5번 기능
 def show_detail():
     """번호를 입력하면 해당 프롬프트의 전체 내용을 출력한다. (조회수 증가)"""
     print("\n=== 프롬프트 상세 보기 ===")
@@ -222,6 +223,7 @@ def show_detail():
 def manage_favorite():
     """번호를 입력해 즐겨찾기를 추가/해제한다."""
     print("\n=== 즐겨찾기 관리 ===")
+    print("즐겨찾기 토글 기능입니다. 중복 즐겨찾기 시 취소됩니다.")
     if not prompts:
         print("등록된 프롬프트가 없습니다.")
         return
@@ -235,13 +237,13 @@ def manage_favorite():
         return
 
     item = prompts[int(choice) - 1]
-    item["favorite"] = not item["favorite"]
+    item["favorite"] = not item["favorite"] # 토글
     if item["favorite"]:
         print(f"'{item['title']}' 프롬프트를 즐겨찾기에 추가했습니다!")
     else:
         print(f"'{item['title']}' 프롬프트를 즐겨찾기에서 해제했습니다.")
 
-
+# 7번 기능
 def show_favorites():
     """즐겨찾기된 프롬프트만 모아서 출력한다."""
     print("\n=== 즐겨찾기 목록 ===")
@@ -276,6 +278,7 @@ def edit_prompt():
     new_title = input(f"제목 [{item['title']}]: ").strip()
     new_content = input("내용 (기존 유지하려면 Enter): ").strip()
 
+    # 값이 있을 때만 교체
     if new_title:
         item["title"] = new_title
     if new_content:
@@ -327,6 +330,7 @@ def save_to_json():
     print(f"'{DATA_FILE}' 파일에 {len(prompts)}개의 프롬프트를 저장했습니다.")
 
 
+# prompts는 ㄹ
 def load_from_json():
     """JSON 파일에서 프롬프트 데이터를 불러온다. (보너스)"""
     print("\n=== JSON에서 불러오기 ===")
@@ -358,6 +362,7 @@ def export_markdown():
     categories = sorted({p["category"] for p in prompts})
     for category in categories:
         items = [p for p in prompts if p["category"] == category]
+        # 파일 이름 공백, 슬래시 제거
         safe_name = category.replace(" ", "_").replace("/", "_")
         path = os.path.join(export_dir, f"{safe_name}.md")
         with open(path, "w", encoding="utf-8") as f:
