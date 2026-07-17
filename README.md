@@ -1,7 +1,22 @@
 # 나만의 프롬프트 관리 (Prompt Manager)
 
+**GitHub 저장소**: https://github.com/rla8127/codyssey-native-A1-1
+
 터미널에서 메뉴 번호를 입력해 AI 프롬프트를 추가·조회·검색·관리하는 **Python 콘솔 프로그램**입니다.
 외부 라이브러리 없이 파이썬 표준 문법과 표준 라이브러리(`json`)만 사용합니다.
+
+## 개발 환경 (Git 설정)
+
+```bash
+$ git --version
+git version 2.50.1
+
+$ git config --get user.name
+김동현
+
+$ git config --get user.email
+rla8127@chunjae.co.kr
+```
 
 ## 실행 방법
 
@@ -9,7 +24,7 @@ Python 3.10 이상이 필요합니다.
 
 ```bash
 # 저장소 클론
-git clone <저장소 URL>
+git clone https://github.com/rla8127/codyssey-native-A1-1.git
 cd codyssey-native-A1-1
 
 # 파이썬 버전 확인 (3.10 이상)
@@ -25,6 +40,43 @@ python prompt_manager.py
 
 > 실행 중 추가한 프롬프트와 즐겨찾기 상태는 메모리에 유지되며, 종료 시 초기화됩니다.
 > (`11. JSON으로 저장` / `12. JSON에서 불러오기`로 영속화할 수 있습니다.)
+
+### Clone 실행 로그
+
+실제로 위 저장소를 클론해 확인한 결과입니다.
+
+```
+$ git clone https://github.com/rla8127/codyssey-native-A1-1.git
+Cloning into 'codyssey-native-A1-1'...
+
+$ cd codyssey-native-A1-1
+$ ls -la
+total 40
+drwxr-xr-x. 4 ec2-user ec2-user   140 Jul 17 08:17 .
+drwx------. 3 ec2-user ec2-user    60 Jul 17 08:17 ..
+drwxr-xr-x. 7 ec2-user ec2-user   240 Jul 17 08:17 .git
+-rw-r--r--. 1 ec2-user ec2-user   178 Jul 17 08:17 .gitignore
+-rw-r--r--. 1 ec2-user ec2-user 17090 Jul 17 08:17 README.md
+-rw-r--r--. 1 ec2-user ec2-user 14346 Jul 17 08:17 prompt_manager.py
+drwxr-xr-x. 2 ec2-user ec2-user   260 Jul 17 08:17 screenshots
+
+$ git log --oneline
+8472e83 Merge pull request #1 from rla8127/feature/prompt-list
+7346eb4 chore: REAME 수정
+b20e677 feat 개발
+cf3309a 1차 완성
+4de5565 docs: README에 프로그램 설명·실행 방법·기능 목록 작성
+5ed85d8 feat: 보너스 - 수정/삭제/조회수 Top, JSON 저장·불러오기, Markdown 내보내기
+163adfc merge: feature/prompt-list 프롬프트 목록 기능 병합
+1822e98 feat: 프롬프트 목록 출력 기능 구현
+4aeb684 feat: 즐겨찾기 추가/해제 및 즐겨찾기 목록 기능 구현
+30e2888 feat: 프롬프트 검색 및 상세 보기(조회수 포함) 기능 구현
+7bbbe2f feat: 카테고리별 조회 기능 구현
+5751f46 feat: 프롬프트 추가 기능 및 공용 입력 함수 구현
+259a557 feat: 메뉴 루프와 기본 프롬프트 데이터 골격 추가
+1c47269 chore: 불필요 파일 제외용 .gitignore 추가
+56e7909 first commit
+```
 
 ## 기능 목록
 
@@ -363,6 +415,10 @@ def edit_prompt():
     print("프롬프트가 수정되었습니다!")
 ```
 
+**카테고리 변경 정책**: 제목/내용과 달리 카테고리는 실수로 바뀌는 걸 막기 위해 `y/N` 확인을 한 번 더 거칩니다.
+`y`를 입력했을 때만 `select_category()`를 다시 호출해 목록에서 새 카테고리를 고르거나 직접 입력하며,
+그 외 입력(`N`, Enter 등)은 모두 "변경 안 함"으로 처리해 기존 카테고리를 유지합니다.
+
 ### 9. 프롬프트 삭제
 
 ```python
@@ -485,7 +541,8 @@ def main():
 2. `git checkout -b feature/prompt-list`로 브랜치를 분리해 "프롬프트 목록 출력" 기능 개발
 3. `git checkout main` 후 `git merge feature/prompt-list`로 병합 (병합 커밋 `163adfc`, 부모 커밋 2개)
 4. 이후 보너스 기능(수정/삭제/조회수 Top/JSON 저장·불러오기/Markdown 내보내기)과 문서화를 `main`에서 계속 진행
-5. `feature/prompt-list` 브랜치를 다시 만들어 추가 기능을 개발한 뒤 `main`으로 병합 (Fast-forward)
+5. `feature/prompt-list` 브랜치를 다시 만들어 추가 기능을 개발한 뒤 원격에 푸시
+6. GitHub에서 Pull Request #1을 열어 `feature/prompt-list` → `main`으로 병합 (`8472e83`)
 
 전체 이력은 아래 명령으로 확인할 수 있습니다.
 
@@ -494,7 +551,11 @@ git log --graph --all --oneline --decorate
 ```
 
 ```
-* b20e677 (HEAD -> feature/prompt-list, main) feat 개발
+*   8472e83 (origin/main, origin/HEAD) Merge pull request #1 from rla8127/feature/prompt-list
+|\
+| * 7346eb4 (HEAD -> feature/prompt-list, origin/feature/prompt-list) chore: REAME 수정
+|/
+* b20e677 (main) feat 개발
 * cf3309a 1차 완성
 * 4de5565 docs: README에 프로그램 설명·실행 방법·기능 목록 작성
 * 5ed85d8 feat: 보너스 - 수정/삭제/조회수 Top, JSON 저장·불러오기, Markdown 내보내기
@@ -510,3 +571,14 @@ git log --graph --all --oneline --decorate
 * 1c47269 chore: 불필요 파일 제외용 .gitignore 추가
 * 56e7909 first commit
 ```
+
+### 병합 충돌 해결 절차
+
+이번 작업에서는 `feature/prompt-list`가 `main`에서 갈라져 나간 뒤로도 서로 다른 파일/함수만 건드려서
+실제 충돌은 발생하지 않았지만(`163adfc`는 `Merge made by the 'ort' strategy`로 자동 병합됨), 충돌이 나면 다음 순서로 처리합니다.
+
+1. `git merge <브랜치명>` 실행 시 `CONFLICT (content): Merge conflict in <파일>` 메시지가 뜨면 충돌 발생
+2. 해당 파일을 열어 `<<<<<<<`, `=======`, `>>>>>>>` 마커로 표시된 두 버전을 확인하고, 유지할 내용만 남기고 마커를 지움
+3. `git add <파일>`로 해결된 상태를 표시
+4. 모든 충돌을 해결했으면 `git commit`으로 병합을 완료 (메시지는 기본 병합 메시지 사용 가능)
+5. 병합을 취소하고 싶으면 커밋 전까지 `git merge --abort`로 병합 이전 상태로 되돌릴 수 있음
